@@ -19,8 +19,8 @@ public class WebSecurity {
     http.csrf(AbstractHttpConfigurer::disable)
         .authenticationProvider(authenticationProvider)
         .authorizeHttpRequests((auth) -> auth
-            .requestMatchers("/signup", "/login", "/css/**", "/js/**").permitAll()
-            .requestMatchers("/home").authenticated()
+            .requestMatchers("/user/signup", "/login", "/css/**", "/js/**").permitAll()
+            .requestMatchers("/web/**","/home").authenticated()
         )
         .formLogin(
             httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.loginPage("/login")
