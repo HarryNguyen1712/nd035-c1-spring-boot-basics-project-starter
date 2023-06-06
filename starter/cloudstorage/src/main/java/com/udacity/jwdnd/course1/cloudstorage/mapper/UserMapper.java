@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
-
 import org.springframework.stereotype.Component;
 
 @Mapper
@@ -16,7 +15,7 @@ public interface UserMapper {
   User getUser(String userName);
 
   @Select("SELECT count(username) FROM USERS WHERE username = #{username}")
-  int CheckUserExist(String userName);
+  int checkUserExist(String userName);
 
   @Select("SELECT userid FROM USERS WHERE username = #{username}")
   int getUserId(String userName);

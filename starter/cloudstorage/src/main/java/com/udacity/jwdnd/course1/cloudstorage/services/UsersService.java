@@ -23,23 +23,26 @@ public class UsersService implements UserDetailsService {
     this.userMapper = userMapper;
   }
 
-  private boolean isUsernameAvailable(String username){
-    int result = userMapper.CheckUserExist(username);
+  private boolean isUsernameAvailable(String username) {
+    int result = userMapper.checkUserExist(username);
     return result != 1;
   }
 
   public String signUpUser(UserModel user) {
-    if(isUsernameAvailable(user.username())){
+    if (isUsernameAvailable(user.username())) {
       SecureRandom random = new SecureRandom();
       byte[] salt = new byte[16];
       random.nextBytes(salt);
       String encodedSalt = Base64.getEncoder().encodeToString(salt);
       String hashedPassword = hashService.getHashedValue(user.password(), encodedSalt);
-      int result = userMapper.insert(new User(null, user.username(), encodedSalt, hashedPassword, user.firstName(), user.lastName()));
-      if(result == 0){
+      int result = userMapper.insert(
+          new User(null, user.username(), encodedSalt, hashedPassword, user.firstName(),
+              user.lastName()));
+      if (result == 0) {
         return "There was an error signing you up. Please try again.";
+      } else {
+        return "Signed up";
       }
-      else return "Signed up";
     }
     return "The username already exists.";
   }

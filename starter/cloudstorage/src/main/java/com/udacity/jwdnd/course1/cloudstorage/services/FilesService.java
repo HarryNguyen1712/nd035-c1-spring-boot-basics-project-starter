@@ -1,7 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
 import com.udacity.jwdnd.course1.cloudstorage.entity.File;
-import com.udacity.jwdnd.course1.cloudstorage.mapper.FIleMapper;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import java.io.IOException;
 import java.util.List;
@@ -12,11 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FilesService {
 
-  private final FIleMapper fileMapper;
+  private final FileMapper fileMapper;
 
   private final UserMapper userMapper;
 
-  public FilesService(FIleMapper fileMapper, UserMapper userMapper) {
+  public FilesService(FileMapper fileMapper, UserMapper userMapper) {
     this.fileMapper = fileMapper;
     this.userMapper = userMapper;
   }
@@ -40,7 +40,9 @@ public class FilesService {
   }
 
   public List<File> getListFile() {
-    return fileMapper.getListFile();
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    int userId = userMapper.getUserId(username);
+    return fileMapper.getListFile(userId);
   }
 
   public String deleteFile(Integer fileId) {

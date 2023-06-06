@@ -9,18 +9,19 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
-public interface FIleMapper {
+public interface FileMapper {
 
-  @Insert("INSERT INTO FILES (filename, contenttype, filesize, userid, filedata) VALUES (#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
+  @Insert("INSERT INTO FILES (filename, contenttype, filesize, userid, filedata) "
+      + "VALUES (#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
   @Options(useGeneratedKeys = true, keyColumn = "FILEID")
   int insert(File file);
 
-  @Select("SELECT * FROM FILES")
-  List<File> getListFile();
+  @Select("SELECT * FROM FILES WHERE userid = #{userId}")
+  List<File> getListFile(Integer userId);
 
-  @Delete("DELETE FROM FILES WHERE fileId = #{fileId}")
+  @Delete("DELETE FROM FILES WHERE fileid = #{fileId}")
   int deleteFile(Integer fileId);
 
-  @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
+  @Select("SELECT * FROM FILES WHERE fileid = #{fileId}")
   File getFile(Integer fileId);
 }

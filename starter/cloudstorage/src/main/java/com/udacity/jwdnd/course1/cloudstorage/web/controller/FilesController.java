@@ -2,8 +2,10 @@ package com.udacity.jwdnd.course1.cloudstorage.web.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.entity.File;
 import com.udacity.jwdnd.course1.cloudstorage.services.FilesService;
+import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.utils.FileUtils;
 import com.udacity.jwdnd.course1.cloudstorage.web.mapper.FileModelMapper;
+import com.udacity.jwdnd.course1.cloudstorage.web.mapper.NoteModelMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -21,12 +23,22 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/web/file")
 public class FilesController {
+
   private final FilesService filesService;
+
   private final FileModelMapper fileModelMapper;
 
-  public FilesController(FilesService filesService, FileModelMapper fileModelMapper) {
+  private final NoteService noteService;
+
+  private final NoteModelMapper noteModelMapper;
+
+
+  public FilesController(FilesService filesService, FileModelMapper fileModelMapper,
+                         NoteService noteService, NoteModelMapper noteModelMapper) {
     this.filesService = filesService;
     this.fileModelMapper = fileModelMapper;
+    this.noteService = noteService;
+    this.noteModelMapper = noteModelMapper;
   }
 
   @PostMapping("/upload")
@@ -37,6 +49,8 @@ public class FilesController {
     }
     model.addAttribute("listFiles",
         fileModelMapper.convertEntityToModelList(filesService.getListFile()));
+    model.addAttribute("listNotes",
+        noteModelMapper.convertEntityToModelList(noteService.getListNote()));
     return "home";
   }
 
@@ -48,6 +62,8 @@ public class FilesController {
     }
     model.addAttribute("listFiles",
         fileModelMapper.convertEntityToModelList(filesService.getListFile()));
+    model.addAttribute("listNotes",
+        noteModelMapper.convertEntityToModelList(noteService.getListNote()));
     return "home";
   }
 

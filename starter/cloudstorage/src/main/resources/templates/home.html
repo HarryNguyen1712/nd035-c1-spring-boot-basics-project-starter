@@ -85,14 +85,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-success">Edit</button>
-                                <a class="btn btn-danger">Delete</a>
-                            </td>
-                            <th scope="row">Example Note Title</th>
-                            <td>Example Note Description</td>
-                        </tr>
+                        <th:block th:each="note:${listNotes}">
+                            <tr>
+                                <td>
+                                    <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}','${note.noteTitle}','${note.noteDescription}')|" >Edit</button>
+                                    <a class="btn btn-danger" th:href="@{'/web/note/deleteNote?fnoteId='+${note.noteId()}}">Delete</a>
+                                </td>
+                                <th scope="row" th:utext="${note.noteTitle()}"></th>
+                                <td th:utext="${note.noteDescription()}">Example Note Description</td>
+                            </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -108,7 +110,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="#" method="POST">
+                                <form action="/web/note/addNote" method="POST">
                                     <input type="hidden" name="noteId" id="note-id">
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Title</label>
