@@ -68,7 +68,8 @@ public class FilesController {
   }
 
   @GetMapping("/download")
-  public void downloadFile(@RequestParam("fileId") Integer fileId, HttpServletResponse response) throws IOException {
+  public void downloadFile(@RequestParam("fileId") Integer fileId, HttpServletResponse response)
+      throws IOException {
     File file = filesService.downloadFile(fileId);
     response.setContentType("application/octet-stream");
     response.setHeader("Content-disposition",
