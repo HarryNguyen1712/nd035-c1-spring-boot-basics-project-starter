@@ -201,4 +201,14 @@ class CloudStorageApplicationTests {
     }
     Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
   }
+
+  @Test
+  public void unauthorizedUser() {
+    driver.get("http://localhost:" + this.port + "/home");
+    Assertions.assertEquals("Login", driver.getTitle());
+    driver.get("http://localhost:" + this.port + "/login");
+    Assertions.assertEquals("Login", driver.getTitle());
+    driver.get("http://localhost:" + this.port + "/signup");
+    Assertions.assertEquals("Sign Up", driver.getTitle());
+  }
 }
