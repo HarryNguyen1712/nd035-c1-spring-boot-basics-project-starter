@@ -1,8 +1,12 @@
 package com.udacity.jwdnd.course1.cloudstorage.web.controller;
 
+import static com.udacity.jwdnd.course1.cloudstorage.utils.ControllerUtils.returnHome;
+
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FilesService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UsersService;
+import com.udacity.jwdnd.course1.cloudstorage.web.mapper.CredentialModelMapper;
 import com.udacity.jwdnd.course1.cloudstorage.web.mapper.FileModelMapper;
 import com.udacity.jwdnd.course1.cloudstorage.web.mapper.NoteModelMapper;
 import com.udacity.jwdnd.course1.cloudstorage.web.model.UserModel;
@@ -25,15 +29,20 @@ public class UsersController {
   private final NoteModelMapper noteModelMapper;
 
   private final NoteService noteService;
+  private final CredentialsService credentialsService;
+  private final CredentialModelMapper credentialModelMapper;
 
   public UsersController(UsersService usersService, FilesService filesService,
                          FileModelMapper fileModelMapper, NoteModelMapper noteModelMapper,
-                         NoteService noteService) {
+                         NoteService noteService, CredentialsService credentialsService,
+                         CredentialModelMapper credentialModelMapper) {
     this.usersService = usersService;
     this.filesService = filesService;
     this.fileModelMapper = fileModelMapper;
     this.noteModelMapper = noteModelMapper;
     this.noteService = noteService;
+    this.credentialsService = credentialsService;
+    this.credentialModelMapper = credentialModelMapper;
   }
 
   @GetMapping("/login")
@@ -48,11 +57,8 @@ public class UsersController {
 
   @GetMapping("/home")
   public String homePage(Model model) {
-    model.addAttribute("listFiles",
-        fileModelMapper.convertEntityToModelList(filesService.getListFile()));
-    model.addAttribute("listNotes",
-        noteModelMapper.convertEntityToModelList(noteService.getListNote()));
-    return "home";
+    return returnHome(model, null, fileModelMapper, filesService, noteModelMapper, noteService,
+        credentialModelMapper, credentialsService);
   }
 
   @PostMapping("/signup")

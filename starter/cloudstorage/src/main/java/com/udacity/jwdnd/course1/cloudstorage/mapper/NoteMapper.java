@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Update;
 public interface NoteMapper {
   @Insert("INSERT INTO NOTES (notetitle, notedescription, userid) "
       + "VALUES (#{noteTitle}, #{noteDescription} ,#{userId})")
-  @Options(useGeneratedKeys = true, keyColumn = "NOTEID")
+  @Options(useGeneratedKeys = true, keyColumn = "noteid")
   int insert(Note note);
 
   @Select("SELECT * FROM NOTES WHERE userid = #{userId}")

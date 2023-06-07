@@ -1,9 +1,13 @@
 package com.udacity.jwdnd.course1.cloudstorage.web.controller;
 
+import static com.udacity.jwdnd.course1.cloudstorage.utils.ControllerUtils.returnHome;
+
 import com.udacity.jwdnd.course1.cloudstorage.entity.File;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FilesService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.utils.FileUtils;
+import com.udacity.jwdnd.course1.cloudstorage.web.mapper.CredentialModelMapper;
 import com.udacity.jwdnd.course1.cloudstorage.web.mapper.FileModelMapper;
 import com.udacity.jwdnd.course1.cloudstorage.web.mapper.NoteModelMapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,39 +36,35 @@ public class FilesController {
 
   private final NoteModelMapper noteModelMapper;
 
+  private final CredentialModelMapper credentialModelMapper;
+
+  private final CredentialsService credentialsService;
+
 
   public FilesController(FilesService filesService, FileModelMapper fileModelMapper,
-                         NoteService noteService, NoteModelMapper noteModelMapper) {
+                         NoteService noteService, NoteModelMapper noteModelMapper,
+                         CredentialModelMapper credentialModelMapper,
+                         CredentialsService credentialsService) {
     this.filesService = filesService;
     this.fileModelMapper = fileModelMapper;
     this.noteService = noteService;
     this.noteModelMapper = noteModelMapper;
+    this.credentialModelMapper = credentialModelMapper;
+    this.credentialsService = credentialsService;
   }
 
   @PostMapping("/upload")
   public String uploadFile(@RequestParam("fileUpload") MultipartFile file, Model model) {
     String message = filesService.uploadFile(file);
-    if (message != null) {
-      model.addAttribute("message", message);
-    }
-    model.addAttribute("listFiles",
-        fileModelMapper.convertEntityToModelList(filesService.getListFile()));
-    model.addAttribute("listNotes",
-        noteModelMapper.convertEntityToModelList(noteService.getListNote()));
-    return "home";
+    return returnHome(model, message, fileModelMapper, filesService, noteModelMapper, noteService,
+        credentialModelMapper, credentialsService);
   }
 
   @GetMapping("/delete")
   public String deleteFile(@RequestParam("fileId") Integer fileId, Model model) {
     String message = filesService.deleteFile(fileId);
-    if (message != null) {
-      model.addAttribute("message", message);
-    }
-    model.addAttribute("listFiles",
-        fileModelMapper.convertEntityToModelList(filesService.getListFile()));
-    model.addAttribute("listNotes",
-        noteModelMapper.convertEntityToModelList(noteService.getListNote()));
-    return "home";
+    return returnHome(model, message, fileModelMapper, filesService, noteModelMapper, noteService,
+        credentialModelMapper, credentialsService);
   }
 
   @GetMapping("/download")
