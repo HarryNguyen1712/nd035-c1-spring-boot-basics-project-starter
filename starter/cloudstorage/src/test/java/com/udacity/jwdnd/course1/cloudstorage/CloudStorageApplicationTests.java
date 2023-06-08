@@ -151,10 +151,6 @@ class CloudStorageApplicationTests {
     webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitNote")));
     WebElement submitNote = driver.findElement(By.id("submitNote"));
     submitNote.click();
-
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
-    WebElement navNoteAfterSubmit = driver.findElement(By.id("nav-notes-tab"));
-    navNoteAfterSubmit.click();
   }
 
   private void doUpdateNote(String title, String description) {
@@ -190,7 +186,39 @@ class CloudStorageApplicationTests {
     navNoteAfterSubmit.click();
     webDriverWait.until(ExpectedConditions.titleContains("Home"));
     webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(title)));
+  }
 
+  private void doInputCredential(String url,String username, String password) {
+    // Log in to our dummy account.
+    driver.get("http://localhost:" + this.port + "/home");
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
+    WebElement navCredential = driver.findElement(By.id("nav-credentials-tab"));
+    navCredential.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addCredential")));
+    WebElement addCredential = driver.findElement(By.id("addCredential"));
+    addCredential.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+    WebElement credentialUrl = driver.findElement(By.id("credential-url"));
+    credentialUrl.click();
+    credentialUrl.sendKeys(url);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
+    WebElement credentialUsername = driver.findElement(By.id("credential-username"));
+    credentialUsername.click();
+    credentialUsername.sendKeys(username);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+    WebElement credentialPassword = driver.findElement(By.id("credential-password"));
+    credentialPassword.click();
+    credentialPassword.sendKeys(password);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitCredential")));
+    WebElement submitNote = driver.findElement(By.id("submitCredential"));
+    submitNote.click();
   }
 
   private void doMockLogOut() {
@@ -220,16 +248,16 @@ class CloudStorageApplicationTests {
   }
 
   /**
-	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
-	 * rest of your code.
-	 * This test is provided by Udacity to perform some basic sanity testing of
-	 * your code to ensure that it meets certain rubric criteria.
-	 * <p>
-	 * If this test is failing, please ensure that you are handling redirecting users
-	 * back to the login page after a successful sign-up.
-	 * Read more about the requirement in the rubric:
-	 * <a href="https://review.udacity.com/#!/rubrics/2724/view">...</a>
-	 */
+   * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
+   * rest of your code.
+   * This test is provided by Udacity to perform some basic sanity testing of
+   * your code to ensure that it meets certain rubric criteria.
+   * <p>
+   * If this test is failing, please ensure that you are handling redirecting users
+   * back to the login page after a successful sign-up.
+   * Read more about the requirement in the rubric:
+   * <a href="https://review.udacity.com/#!/rubrics/2724/view">...</a>
+   */
   @Test
   public void testRedirection() {
     // Create a test account
@@ -240,17 +268,17 @@ class CloudStorageApplicationTests {
   }
 
   /**
-	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
-	 * rest of your code.
-	 * This test is provided by Udacity to perform some basic sanity testing of
-	 * your code to ensure that it meets certain rubric criteria.
-	 * <p>
-	 * If this test is failing, please ensure that you are handling bad URLs
-	 * gracefully, for example with a custom error page.
-	 * <p>
-	 * Read more about custom error pages at:
-	 * <a href="https://attacomsian.com/blog/spring-boot-custom-error-page#displaying-custom-error-page">...</a>
-	 */
+   * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
+   * rest of your code.
+   * This test is provided by Udacity to perform some basic sanity testing of
+   * your code to ensure that it meets certain rubric criteria.
+   * <p>
+   * If this test is failing, please ensure that you are handling bad URLs
+   * gracefully, for example with a custom error page.
+   * <p>
+   * Read more about custom error pages at:
+   * <a href="https://attacomsian.com/blog/spring-boot-custom-error-page#displaying-custom-error-page">...</a>
+   */
   @Test
   public void testBadUrl() {
     // Create a test account
@@ -264,17 +292,17 @@ class CloudStorageApplicationTests {
 
 
   /**
-	 * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
-	 * rest of your code.
-	 * This test is provided by Udacity to perform some basic sanity testing of
-	 * your code to ensure that it meets certain rubric criteria.
-	 * <p>
-	 * If this test is failing, please ensure that you are handling uploading large files (>1MB),
-	 * gracefully in your code.
-	 * <p>
-	 * Read more about file size limits here:
-	 * <a href="https://spring.io/guides/gs/uploading-files/">...</a> under the "Tuning File Upload Limits" section.
-	 */
+   * PLEASE DO NOT DELETE THIS TEST. You may modify this test to work with the
+   * rest of your code.
+   * This test is provided by Udacity to perform some basic sanity testing of
+   * your code to ensure that it meets certain rubric criteria.
+   * <p>
+   * If this test is failing, please ensure that you are handling uploading large files (>1MB),
+   * gracefully in your code.
+   * <p>
+   * Read more about file size limits here:
+   * <a href="https://spring.io/guides/gs/uploading-files/">...</a> under the "Tuning File Upload Limits" section.
+   */
   @Test
   public void testLargeUpload() {
     // Create a test account
@@ -322,23 +350,30 @@ class CloudStorageApplicationTests {
   @Test
   public void createNote() {
     doLogIn("LFT", "123");
-    doInputNote("test","test add note");
+    doInputNote("test", "test add note");
     assertTrue(driver.getPageSource().contains("test"));
   }
 
   @Test
   public void updateNote() {
     doLogIn("LFT", "123");
-    doInputNote("test","test add note");
-    doUpdateNote("update note","test update note");
+    doInputNote("test", "test add note");
+    doUpdateNote("update note", "test update note");
     assertTrue(driver.getPageSource().contains("update note"));
   }
 
   @Test
   public void deleteNote() {
     doLogIn("LFT", "123");
-    doInputNote("test delete","test delete note");
+    doInputNote("test delete", "test delete note");
     doDeleteNote("test delete");
     assertFalse(driver.getPageSource().contains("test delete"));
+  }
+
+  @Test
+  public void addCredential() {
+    doLogIn("LFT", "123");
+    doInputCredential("https://www.facebook.com/", "usernametestcredential","password");
+    assertTrue(driver.getPageSource().contains("usernametestcredential"));
   }
 }
