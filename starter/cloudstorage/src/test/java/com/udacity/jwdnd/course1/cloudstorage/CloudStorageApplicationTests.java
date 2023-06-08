@@ -1,5 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.File;
 import java.time.Duration;
@@ -90,7 +93,7 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depending on the rest of your code.
 		*/
-    Assertions.assertTrue(
+    assertTrue(
         driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
   }
 
@@ -119,6 +122,100 @@ class CloudStorageApplicationTests {
     loginButton.click();
 
     webDriverWait.until(ExpectedConditions.titleContains("Home"));
+
+  }
+
+  private void doInputNote(String title, String description) {
+    // Log in to our dummy account.
+    driver.get("http://localhost:" + this.port + "/home");
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+    WebElement navNote = driver.findElement(By.id("nav-notes-tab"));
+    navNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addNote")));
+    WebElement addNote = driver.findElement(By.id("addNote"));
+    addNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+    WebElement noteTitle = driver.findElement(By.id("note-title"));
+    noteTitle.click();
+    noteTitle.sendKeys(title);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+    WebElement noteDescription = driver.findElement(By.id("note-description"));
+    noteDescription.click();
+    noteDescription.sendKeys(description);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitNote")));
+    WebElement submitNote = driver.findElement(By.id("submitNote"));
+    submitNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+    WebElement navNoteAfterSubmit = driver.findElement(By.id("nav-notes-tab"));
+    navNoteAfterSubmit.click();
+  }
+
+  private void doUpdateNote(String title, String description) {
+    // Log in to our dummy account.
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+    WebElement navNote = driver.findElement(By.id("nav-notes-tab"));
+    navNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-edit-note")));
+    WebElement addNote = driver.findElement(By.id("btn-edit-note"));
+    addNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+    WebElement noteTitle = driver.findElement(By.id("note-title"));
+    noteTitle.click();
+    noteTitle.clear();
+    noteTitle.sendKeys(title);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+    WebElement noteDescription = driver.findElement(By.id("note-description"));
+    noteDescription.click();
+    noteDescription.clear();
+    noteDescription.sendKeys(description);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitNote")));
+    WebElement submitNote = driver.findElement(By.id("submitNote"));
+    submitNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+    WebElement navNoteAfterSubmit = driver.findElement(By.id("nav-notes-tab"));
+    navNoteAfterSubmit.click();
+    webDriverWait.until(ExpectedConditions.titleContains("Home"));
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(title)));
+
+  }
+
+  private void doMockLogOut() {
+    driver.get("http://localhost:" + this.port + "/home");
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    // Attempt to logout.
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("buttonLogout")));
+    WebElement buttonSignUp = driver.findElement(By.id("buttonLogout"));
+    buttonSignUp.click();
+
+  }
+
+  private void doDeleteNote(String title) {
+    driver.get("http://localhost:" + this.port + "/home");
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    // Attempt to logout.
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+    WebElement navNote = driver.findElement(By.id("nav-notes-tab"));
+    navNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(title)));
+    WebElement addNote = driver.findElement(By.id(title));
+    addNote.click();
 
   }
 
@@ -210,5 +307,38 @@ class CloudStorageApplicationTests {
     Assertions.assertEquals("Login", driver.getTitle());
     driver.get("http://localhost:" + this.port + "/signup");
     Assertions.assertEquals("Sign Up", driver.getTitle());
+  }
+
+  @Test
+  public void homePageIsUnavailableWhenLogOut() {
+    doMockSignUp("Large File", "Test", "LFT", "123");
+    doLogIn("LFT", "123");
+    driver.get("http://localhost:" + this.port + "/home");
+    Assertions.assertEquals("Home", driver.getTitle());
+    doMockLogOut();
+    Assertions.assertEquals("Login", driver.getTitle());
+  }
+
+  @Test
+  public void createNote() {
+    doLogIn("LFT", "123");
+    doInputNote("test","test add note");
+    assertTrue(driver.getPageSource().contains("test"));
+  }
+
+  @Test
+  public void updateNote() {
+    doLogIn("LFT", "123");
+    doInputNote("test","test add note");
+    doUpdateNote("update note","test update note");
+    assertTrue(driver.getPageSource().contains("update note"));
+  }
+
+  @Test
+  public void deleteNote() {
+    doLogIn("LFT", "123");
+    doInputNote("test delete","test delete note");
+    doDeleteNote("test delete");
+    assertFalse(driver.getPageSource().contains("test delete"));
   }
 }
