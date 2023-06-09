@@ -8,4 +8,9 @@ public class FileUtils {
     String suffix = Arrays.stream(contentType.split("/")).toList().get(1);
     return fileName + "." + suffix;
   }
+
+  public static String splitSuffix(String fileNameWithPrefix) {
+    String fileName = Arrays.stream(fileNameWithPrefix.split("\\.")).toList().get(0);
+    return fileName;
+  }
 }

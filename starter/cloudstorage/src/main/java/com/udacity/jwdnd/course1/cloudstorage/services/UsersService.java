@@ -41,7 +41,7 @@ public class UsersService implements UserDetailsService {
       if (result == 0) {
         return "There was an error signing you up. Please try again.";
       } else {
-        return "Signed up";
+        return null;
       }
     }
     return "The username already exists.";

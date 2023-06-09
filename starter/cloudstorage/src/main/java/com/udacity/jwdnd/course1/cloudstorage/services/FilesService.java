@@ -3,8 +3,10 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.entity.File;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.utils.FileUtils;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,8 @@ public class FilesService {
     int userId = userMapper.getUserId(username);
     try {
       File uploadFile =
-          new File(null, file.getName(), file.getContentType(), file.getSize(), userId,
+          new File(null, FileUtils.splitSuffix(Objects.requireNonNull(file.getOriginalFilename())),
+              file.getContentType(), file.getSize(), userId,
               file.getInputStream().readAllBytes());
       int result = fileMapper.insert(uploadFile);
       if (result == 1) {

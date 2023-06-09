@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UsersController {
@@ -62,9 +62,14 @@ public class UsersController {
   }
 
   @PostMapping("/signup")
-  public RedirectView signUp(@ModelAttribute UserModel userModel, Model model) {
+  public String signUp(@ModelAttribute UserModel userModel, RedirectAttributes redirectAttrs) {
     String message = usersService.signUpUser(userModel);
-    model.addAttribute("message", message);
-    return new RedirectView("/login");
+    if (message != null) {
+      redirectAttrs.addFlashAttribute("message", message);
+      return "/signup";
+    } else {
+      redirectAttrs.addFlashAttribute("message", "You successfully signed up!");
+      return "redirect:/login";
+    }
   }
 }

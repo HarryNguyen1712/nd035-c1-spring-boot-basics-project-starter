@@ -28,7 +28,7 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                <form action="web/file/upload" enctype="multipart/form-data" method="POST">
+                <form th:action="@{/web/file/upload}" enctype="multipart/form-data" method="POST">
                     <div class="container">
                         <div class="row" style="margin: 1em;">
                             <div class="col-sm-2">
@@ -89,7 +89,7 @@
                             <tr >
                                 <td>
                                     <button type="button" id="btn-edit-note" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}','${note.noteTitle}','${note.noteDescription}')|" >Edit</button>
-                                    <a th:id="${note.noteTitle}" th:href="@{'/web/note/deleteNote?noteId='+${note.noteId()}}">Delete</a>
+                                    <a id="btn-delete-note" th:href="@{'/web/note/deleteNote?noteId='+${note.noteId()}}">Delete</a>
                                 </td>
                                 <th th:id="${note.noteTitle()}" scope="row" th:utext="${note.noteTitle()}"></th>
                                 <td th:utext="${note.noteDescription()}"></td>
@@ -110,7 +110,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="/web/note/addNote" method="POST">
+                                <form th:action="@{/web/note/addNote}" method="POST">
                                     <input type="hidden" name="noteId" id="note-id">
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Title</label>
@@ -155,8 +155,8 @@
                         <th:block th:each="credential:${listCredentials}">
                             <tr>
                                 <td>
-                                    <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}','${credential.url}','${credential.username}','${@encryptionService.decryptValue(credential.password,credential.key)}')|">Edit</button>
-                                    <a class="btn btn-danger" th:href="@{'web/credential/deleteCredential?credentialId='+${credential.credentialId}}">Delete</a>
+                                    <button id="btn-update-credential" type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}','${credential.url}','${credential.username}','${@encryptionService.decryptValue(credential.password,credential.key)}')|">Edit</button>
+                                    <a id="btn-delete-credential" class="btn btn-danger" th:href="@{'web/credential/deleteCredential?credentialId='+${credential.credentialId}}">Delete</a>
                                 </td>
                                 <th scope="row" th:utext="${credential.url}"></th>
                                 <td th:utext="${credential.username}"></td>
@@ -178,7 +178,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="/web/credential/addCredential" method="POST">
+                                <form th:action="@{/web/credential/addCredential}" method="POST">
                                     <input type="hidden" name="credentialId" id="credential-id">
                                     <div class="form-group">
                                         <label for="credential-url" class="col-form-label">URL</label>

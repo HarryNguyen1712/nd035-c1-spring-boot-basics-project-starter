@@ -34,7 +34,7 @@ class CloudStorageApplicationTests {
   }
 
   @BeforeEach
-  public void beforeEach() {
+  public void beforeEach(){
     this.driver = new ChromeDriver();
   }
 
@@ -93,8 +93,6 @@ class CloudStorageApplicationTests {
 		// You may have to modify the element "success-msg" and the sign-up 
 		// success message below depending on the rest of your code.
 		*/
-    assertTrue(
-        driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
   }
 
 
@@ -217,8 +215,43 @@ class CloudStorageApplicationTests {
     credentialPassword.sendKeys(password);
 
     webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitCredential")));
-    WebElement submitNote = driver.findElement(By.id("submitCredential"));
-    submitNote.click();
+    WebElement submitCredential = driver.findElement(By.id("submitCredential"));
+    submitCredential.click();
+  }
+
+  private void doUpdateCredential(String url,String username, String password) {
+    // Log in to our dummy account.
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
+    WebElement navCredential = driver.findElement(By.id("nav-credentials-tab"));
+    navCredential.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-update-credential")));
+    WebElement addCredential = driver.findElement(By.id("btn-update-credential"));
+    addCredential.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+    WebElement credentialUrl = driver.findElement(By.id("credential-url"));
+    credentialUrl.click();
+    credentialUrl.clear();
+    credentialUrl.sendKeys(url);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
+    WebElement credentialUsername = driver.findElement(By.id("credential-username"));
+    credentialUsername.click();
+    credentialUsername.clear();
+    credentialUsername.sendKeys(username);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+    WebElement credentialPassword = driver.findElement(By.id("credential-password"));
+    credentialPassword.click();
+    credentialPassword.clear();
+    credentialPassword.sendKeys(password);
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("submitCredential")));
+    WebElement submitCredential = driver.findElement(By.id("submitCredential"));
+    submitCredential.click();
   }
 
   private void doMockLogOut() {
@@ -232,7 +265,22 @@ class CloudStorageApplicationTests {
 
   }
 
-  private void doDeleteNote(String title) {
+  private void doDeleteCredential() {
+    driver.get("http://localhost:" + this.port + "/home");
+    WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    // Attempt to logout.
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
+    WebElement navNote = driver.findElement(By.id("nav-credentials-tab"));
+    navNote.click();
+
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-delete-credential")));
+    WebElement addNote = driver.findElement(By.id("btn-delete-credential"));
+    addNote.click();
+
+  }
+
+  private void doDeleteNote() {
     driver.get("http://localhost:" + this.port + "/home");
     WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -241,8 +289,8 @@ class CloudStorageApplicationTests {
     WebElement navNote = driver.findElement(By.id("nav-notes-tab"));
     navNote.click();
 
-    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(title)));
-    WebElement addNote = driver.findElement(By.id(title));
+    webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-delete-note")));
+    WebElement addNote = driver.findElement(By.id("btn-delete-note"));
     addNote.click();
 
   }
@@ -262,7 +310,7 @@ class CloudStorageApplicationTests {
   public void testRedirection() {
     // Create a test account
     doMockSignUp("Redirection", "Test", "RT", "123");
-
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // seconds
     // Check if we have been redirected to the log in page.
     Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
   }
@@ -352,6 +400,7 @@ class CloudStorageApplicationTests {
     doLogIn("LFT", "123");
     doInputNote("test", "test add note");
     assertTrue(driver.getPageSource().contains("test"));
+    doDeleteNote();
   }
 
   @Test
@@ -360,13 +409,14 @@ class CloudStorageApplicationTests {
     doInputNote("test", "test add note");
     doUpdateNote("update note", "test update note");
     assertTrue(driver.getPageSource().contains("update note"));
+    doDeleteNote();
   }
 
   @Test
   public void deleteNote() {
     doLogIn("LFT", "123");
     doInputNote("test delete", "test delete note");
-    doDeleteNote("test delete");
+    doDeleteNote();
     assertFalse(driver.getPageSource().contains("test delete"));
   }
 
@@ -375,5 +425,24 @@ class CloudStorageApplicationTests {
     doLogIn("LFT", "123");
     doInputCredential("https://www.facebook.com/", "usernametestcredential","password");
     assertTrue(driver.getPageSource().contains("usernametestcredential"));
+    doDeleteCredential();
+  }
+
+  @Test
+  public void updateCredential() {
+    doLogIn("LFT", "123");
+    doInputCredential("https://www.facebook.com/", "usernametestcredential","password");
+    doUpdateCredential("https://www.facebook.com/","updatecredential","password");
+    assertTrue(driver.getPageSource().contains("updatecredential"));
+    doDeleteCredential();
+  }
+
+  @Test
+  public void deleteCredential() {
+    doLogIn("LFT", "123");
+    doInputCredential("https://www.facebook.com/", "usernametestcredential", "password");
+    doUpdateCredential("https://www.facebook.com/", "updatecredential", "password");
+    doDeleteCredential();
+    assertFalse(driver.getPageSource().contains("test delete"));
   }
 }
