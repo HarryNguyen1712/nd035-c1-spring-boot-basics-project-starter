@@ -3,12 +3,12 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.utils.UsersUtils;
 import com.udacity.jwdnd.course1.cloudstorage.web.model.CredentialModel;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,8 +27,7 @@ public class CredentialsService {
   }
 
   public String insertOrUpdateCredential(CredentialModel credentialModel) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    int userId = userMapper.getUserId(username);
+    int userId = UsersUtils.getUserId(userMapper);
     SecureRandom random = new SecureRandom();
     byte[] key = new byte[16];
     random.nextBytes(key);
@@ -57,13 +56,13 @@ public class CredentialsService {
   }
 
   public List<Credential> getListCredential() {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    int userId = userMapper.getUserId(username);
+    int userId = UsersUtils.getUserId(userMapper);
     return credentialMapper.getListCredential(userId);
   }
 
   public String deleteCredential(Integer credentialId) {
-    int result = credentialMapper.deleteCredential(credentialId);
+    int userId = UsersUtils.getUserId(userMapper);
+    int result = credentialMapper.deleteCredential(credentialId, userId);
     if (result == 1) {
       return null;
     } else {

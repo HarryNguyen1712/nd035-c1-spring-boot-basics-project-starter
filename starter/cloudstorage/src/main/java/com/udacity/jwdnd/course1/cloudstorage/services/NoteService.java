@@ -3,10 +3,10 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.utils.UsersUtils;
 import com.udacity.jwdnd.course1.cloudstorage.web.model.NoteModel;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +22,7 @@ public class NoteService {
   }
 
   public String insertOrUpdateNote(NoteModel noteModel) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    int userId = userMapper.getUserId(username);
+    int userId = UsersUtils.getUserId(userMapper);
     int result;
     Note note =
         new Note(noteModel.noteId(), noteModel.noteTitle(), noteModel.noteDescription(), userId);
@@ -40,13 +39,13 @@ public class NoteService {
   }
 
   public List<Note> getListNote() {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    int userId = userMapper.getUserId(username);
+    int userId = UsersUtils.getUserId(userMapper);
     return noteMapper.getListNote(userId);
   }
 
   public String deleteNote(Integer noteId) {
-    int result = noteMapper.deleteNote(noteId);
+    int userId = UsersUtils.getUserId(userMapper);
+    int result = noteMapper.deleteNote(noteId, userId);
     if (result == 1) {
       return null;
     } else {

@@ -23,6 +23,6 @@ public interface NoteMapper {
       + " WHERE (noteId = #{noteId} AND userId = #{userId})")
   int updateNote(Note note);
 
-  @Delete("DELETE FROM NOTES WHERE noteid = #{noteId}")
-  int deleteNote(Integer noteId);
+  @Delete("DELETE FROM NOTES WHERE (noteid = #{noteId} AND userid = #{userId})")
+  int deleteNote(Integer noteId, Integer userId);
 }
